@@ -1,0 +1,67 @@
+{% set name = "lightmotif" %}
+{% set version = "0.10.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  # PyPI sdist omits the [lib] section in lightmotif-py/Cargo.toml; GitHub tag is complete.
+  url: https://github.com/althonos/lightmotif/archive/refs/tags/v{{ version }}.tar.gz
+  sha256: 79379622d59d4210f29437cf3d20d90cbb1f5cda0c3b482709ce49c25f8438a2
+
+build:
+  number: 0
+  run_exports:
+    - {{ pin_subpackage('lightmotif', max_pin="x.x") }}
+
+requirements:
+  build:
+    - python >=3.10,<3.14                 
+    - cross-python_{{ target_platform }}  
+    - crossenv                           
+    - maturin >=1.5,<2                    
+    - {{ compiler('rust') }}
+    - {{ compiler('c') }}
+    - {{ stdlib("c") }}
+    - cargo-bundle-licenses
+  host:
+    - python >=3.10,<3.14
+    - pip
+    - maturin >=1.7,<2
+  run:
+    - python >=3.10,<3.14
+
+test:
+  imports:
+    - lightmotif
+    - lightmotif.lib
+  commands:
+    - python -c "import lightmotif; m = lightmotif.create(['GTTGACCTTATCAAC', 'GTTGATCCAGTCAAC']); print(m.counts)"
+
+about:
+  home: https://github.com/althonos/lightmotif
+  license: MIT
+  license_family: MIT
+  license_file:
+    - COPYING
+    - THIRDPARTY.yml
+  summary: PyO3 bindings for lightmotif, a platform-accelerated biological motif scanning library
+  description: |
+    lightmotif provides Python bindings to a Rust library for very efficient
+    biological motif scanning using position weight matrices (PWMs/PSSMs).
+    It combines SIMD-accelerated matrix scoring (AVX2, SSE2, NEON), striped
+    sequence matrices, and compile-time alphabet definitions to deliver
+    high-throughput PWM scanning for transcription-factor binding site
+    discovery and similar tasks. The API is compatible with Bio.motifs.
+  doc_url: https://lightmotif.readthedocs.io/
+  dev_url: https://github.com/althonos/lightmotif
+
+extra:
+  recipe-maintainers:
+    - dimitris-karapliafis
+  additional-platforms:
+    - linux-aarch64
+    - osx-arm64
+  skip-lints:
+    - version_constraints_missing_whitespace
