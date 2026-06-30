@@ -1,4 +1,4 @@
-{% set name = "rolypoly-tk-complete" %}
+{% set name = "rolypoly-tk" %}
 {% set version = "0.7.6" %}
 
 package:
@@ -6,19 +6,45 @@ package:
   version: {{ version }}
 
 source:
-  # Metapackage: source used only to ship the upstream GPL license file
   url: https://github.com/UriNeri/rolypoly/archive/refs/tags/v{{ version }}.tar.gz
   sha256: 9acc23cd3f4d73dbf699b4809bdf3858804012415eba6a932f3321fe5cc20e87
 
 build:
   number: 0
-  noarch: generic
+  noarch: python
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   run_exports:
     - {{ pin_subpackage(name, max_pin="x.x") }}
+  entry_points:
+    - rolypoly = rolypoly.rolypoly:rolypoly
 
 requirements:
+  host:
+    - python >=3.10,<3.14
+    - pip
+    - hatchling
   run:
-    - rolypoly-tk-core >={{ version }},<0.8
+    - python >=3.10,<3.14
+    - git
+    # Python dependencies (pyproject.toml [project.dependencies], 0.7.6)
+    - mappy >=2.30,<3
+    - needletail >=0.7.0,<0.8
+    - psutil >=7.0.0,<8
+    - pyfastx >=2.2.0,<3
+    - pyhmmer >=0.11.1,<0.12.1
+    - requests >=2.32.4,<3
+    - rich-click >=1.8.9,<2
+    - rich >=14.0.0,<15
+    - viennarna >=2.7.0,<3
+    - intervaltree >=3.1.0,<4
+    - polars >=1.29.0,<2
+    - bbmapy >=0.0.56,<0.0.58
+    - python-xxhash >=3.6.0,<4
+    - pyrodigal-rv >=0.1.0,<0.2
+    - parasail-python >=1.3.4,<2
+    - pyopal >=0.7.3,<0.8
+    - pytantan >=0.1.3,<0.2
+    - pyarrow >=23.0.1,<24
     # Extend (rolypoly extend) — re-enable when pydustmasker 2.x has py310-313 builds on bioconda
     # - pydustmasker >=2.0.0,<3
     # Reads (pixi feature: reads)
@@ -111,13 +137,14 @@ about:
   home: https://github.com/UriNeri/rolypoly
   doc_url: https://urineri.github.io/rolypoly/
   dev_url: https://github.com/UriNeri/rolypoly
-  summary: Meta-package for RolyPoly with full CLI and clustering stack
+  summary: RNA virus analysis toolkit
   description: |
-    Installs rolypoly-tk-core together with external command-line tools and
-    Python libraries required for the full RolyPoly workflow, including
-    read processing, assembly, RNA/protein annotation, virus identification,
-    and contig clustering (rolypoly cluster). Individual bundled tools may use
-    other licenses.
+    RolyPoly is an RNA virus analysis toolkit. This package installs the
+    Python library and CLI together with external command-line tools and
+    clustering dependencies for the full workflow, including read processing,
+    assembly, RNA/protein annotation, virus identification, and contig
+    clustering (rolypoly cluster). Individual bundled tools may use other
+    licenses.
   license: GPL-3.0-or-later
   license_family: GPL3
   license_file: LICENSE
