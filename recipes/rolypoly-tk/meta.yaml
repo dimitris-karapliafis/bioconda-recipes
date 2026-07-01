@@ -46,7 +46,7 @@ requirements:
     - pytantan >=0.1.3,<0.2
     - pyarrow >=23.0.1,<24
     # Extend (rolypoly extend) — re-enable when pydustmasker 2.x has py310-313 builds on bioconda
-    # - pydustmasker >=2.0.0,<3
+    - pydustmasker >=2.0.0,<3
     # Reads (pixi feature: reads)
     - seqkit >=2.10.0,<3
     - bowtie >=1.3.1,<2
